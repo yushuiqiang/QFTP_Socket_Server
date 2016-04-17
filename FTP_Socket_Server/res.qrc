@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="appicon">ftp.ico</file>
+    </qresource>
+</RCC>
