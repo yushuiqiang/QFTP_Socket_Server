@@ -25,9 +25,10 @@ FtpControlConnection::FtpControlConnection(QObject *parent, QTcpSocket *socket,
     userName = it.value();
     it = this->mapServerSetting.find("UserPassword");
     password = it.value();
-    QMap<QString, bool>::iterator it2 = this->mapFileLimit.find("RootPath");
-    rootPath = it2.value();
-    it2 = this->mapFileLimit.find("OnlyRead");
+    it = this->mapServerSetting.find("RootPath");
+    rootPath = it.value();
+
+    QMap<QString, bool>::iterator it2 = this->mapFileLimit.find("OnlyRead");
     readOnly = it2.value();
 
     isLoggedIn = false;
