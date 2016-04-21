@@ -3,8 +3,8 @@
 
 #include "ftpcommand.h"
 
-#include<QTimer>;
-#include<QFileInfo>;
+#include<QTimer>
+#include<QFileInfo>
 
 
 typedef QList<QFileInfo> QFileInfoList;

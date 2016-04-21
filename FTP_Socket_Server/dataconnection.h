@@ -1,11 +1,12 @@
 #ifndef DATACONNECTION_H
 #define DATACONNECTION_H
 #include "ftpcommand.h"
-#include <QTcpServer>;
-#include <QTcpSocket>;
+#include <QTcpServer>
+#include <QTcpSocket>
 
 #include <QObject>
 #include <QPointer>
+class FtpCommand;
 
 class DataConnection : public QObject
 {
@@ -21,10 +22,12 @@ public:
 
     FtpCommand *ftpCommand();
 signals:
+
 private slots:
     void newConnection();
     void encrypted();
     void connected();
+
 public slots:
 private:
     void startFtpCommand();

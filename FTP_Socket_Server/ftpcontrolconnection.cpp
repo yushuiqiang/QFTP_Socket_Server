@@ -134,7 +134,7 @@ void FtpControlConnection::processCommand(const QString &entireCommand)
     } else if ("QUIT" == command) {
         quit();
     } else if ("AUTH" == command && "TLS" == commandParameters.toUpper()) {
-        //auth();
+        auth();
     } else if ("FEAT" == command) {
         feat();
     } else if ("PWD" == command) {
@@ -438,12 +438,12 @@ void FtpControlConnection::pass(const QString &password)
     }
 }
 
-//void FtpControlConnection::auth()
-//{
+void FtpControlConnection::auth()
+{
 //    reply("234 Initializing SSL connection.");
 //    SslServer::setLocalCertificateAndPrivateKey(socket);
 //    socket->startServerEncryption();
-//}
+}
 
 void FtpControlConnection::prot(const QString &protectionLevel)
 {

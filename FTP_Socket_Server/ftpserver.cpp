@@ -17,7 +17,7 @@ FtpServer::FtpServer(QObject *parent, QMap<QString, QString> &mapServerSetting,
         qDebug()<<ok<<port;
     }
 
-    server = new QTcpServer;
+    server = new QTcpServer(this);
     server->listen(QHostAddress::AnyIPv4,port);
     connect(server,&QTcpServer::newConnection,this,&FtpServer::StartNewControlConnection);
 

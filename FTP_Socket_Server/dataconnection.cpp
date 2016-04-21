@@ -2,7 +2,7 @@
 
 DataConnection::DataConnection(QObject *parent) : QObject(parent)
 {
-    server = new QTcpServer;
+    server = new QTcpServer(this);
     connect(server,&QTcpServer::newConnection,this,&DataConnection::newConnection);
     socket = 0;
     isSocketReady = false;
@@ -45,7 +45,7 @@ bool DataConnection::setFtpCommand(FtpCommand *command)
     command->setParent(this);
 
     if (isActiveConnection) {
-        socket = new QTcpSocket;
+        socket = new QTcpSocket(this);
         connect(socket, &QTcpSocket::connected,this,&DataConnection::connected);
         socket->connectToHost(hostName, port);
     } else {

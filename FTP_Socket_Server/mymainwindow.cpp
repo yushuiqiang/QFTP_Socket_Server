@@ -71,6 +71,7 @@ void MyMainWindow::StartServer()
             return;
         }
     }
+
     if(iPort.isEmpty()||iPort[0]==' ')
     {
         QMessageBox::information(this,tr("错误"),tr("端口不能为空！"),QMessageBox::Ok);
@@ -124,13 +125,22 @@ void MyMainWindow::LoadSettings()
 
     mapServerSetting.insert(QString("IPAddress"),ui->comboBoxIPAddress->currentText());
     mapServerSetting.insert(QString("IPPort"),ui->lineEditPort->text());
-    mapServerSetting.insert(QString("UserName"),ui->lineEditUser->text());
-    mapServerSetting.insert(QString("UserPassword"),ui->lineEditPassword->text());
+
     mapServerSetting.insert(QString("RootPath"),ui->lineEditRootPath->text());
 
     mapFileLimit.insert(QString("OnlyWrite"),ui->checkBoxOnlyWrite->isChecked());
     mapFileLimit.insert(QString("OnlyRead"),ui->checkBoxOnlyRead->isChecked());
     mapFileLimit.insert(QString("AllowAnyOneLogin"),ui->checkBoxAllowAnyOneLogin->isChecked());
+    if(ui->checkBoxAllowAnyOneLogin->isChecked()==true)
+    {
+        mapServerSetting.insert(QString("UserName"),QString(""));
+        mapServerSetting.insert(QString("UserPassword"),QString(""));
+    }
+    else
+    {
+        mapServerSetting.insert(QString("UserName"),ui->lineEditUser->text());
+        mapServerSetting.insert(QString("UserPassword"),ui->lineEditPassword->text());
+    }
     mapFileLimit.insert(QString("AllowOneIP"),ui->checkBoxAllowOneIP->isChecked());
 
 

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QTcpServer>
 class FtpCommand;
 class DataConnection;
 
@@ -62,7 +63,7 @@ private:
 
     void pass(const QString &password);
 
-    //void auth();
+    void auth();
 
     void prot(const QString &protectionLevel);
 
