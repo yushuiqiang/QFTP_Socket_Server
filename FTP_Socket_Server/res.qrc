@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/icons">
-        <file alias="appicon">ftp.ico</file>
+        <file alias="appicon">res/ftp.ico</file>
+    </qresource>
+    <qresource prefix="/trans">
+        <file alias="appstrans">res/qt_zh_CN.qm</file>
     </qresource>
 </RCC>

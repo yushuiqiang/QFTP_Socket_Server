@@ -1,6 +1,8 @@
 #include "dataconnection.h"
+#include "ftpcommand.h"
 
-DataConnection::DataConnection(QObject *parent) : QObject(parent)
+DataConnection::DataConnection(QObject *parent) :
+    QObject(parent)
 {
     server = new QTcpServer(this);
     connect(server,&QTcpServer::newConnection,this,&DataConnection::newConnection);

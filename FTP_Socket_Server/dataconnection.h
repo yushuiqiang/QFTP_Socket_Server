@@ -28,7 +28,7 @@ private slots:
     void encrypted();
     void connected();
 
-public slots:
+
 private:
     void startFtpCommand();
     QTcpServer *server;

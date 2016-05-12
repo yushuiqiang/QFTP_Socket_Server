@@ -5,11 +5,19 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+static MyMainWindow *deBug = 0;
+
+void myMessageOutput(QtMsgType /*type*/, const QMessageLogContext &/*context*/, const QString &msg)
+{
+    deBug->AppendDebugText(msg);
+}
+
 MyMainWindow::MyMainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MyMainWindow)
 {
    ui->setupUi(this);
+    deBug = this;
 
    this->setMaximumHeight(400);
    this->setMinimumHeight(400);
@@ -19,11 +27,20 @@ MyMainWindow::MyMainWindow(QWidget *parent) :
    this->GetLocalIP();
    ui->pushButtonStartServer->setEnabled(true);
    ui->pushButtonStopServer->setEnabled(false);
+   server = 0;
 
+   qInstallMessageHandler(myMessageOutput);
+
+   ui->textEdit->setContextMenuPolicy(Qt::NoContextMenu);
 }
+
+
+
+
 
 MyMainWindow::~MyMainWindow()
 {
+    qInstallMessageHandler(0);
     delete ui;
 }
 
@@ -40,11 +57,19 @@ QString MyMainWindow::GetLocalIP()
         {
             qDebug() <<"IPV4 Address: "<< address.toString();
             ui->comboBoxIPAddress->insertItem(i++,address.toString());
-
-            ui->listWidgetIPAddress->addItem(address.toString());
         }
     }
     return 0;
+}
+
+void MyMainWindow::AddIpListSlot(QString IpAddress)
+{
+    if(ipList.contains(IpAddress))
+    {
+        return;
+    }
+    ipList.append(IpAddress);
+    ui->listWidgetIPAddress->addItem(IpAddress);
 }
 
 void MyMainWindow::on_pushButtonStartServer_clicked()
@@ -58,23 +83,33 @@ void MyMainWindow::StartServer()
     QString iPassword=ui->lineEditPassword->text();
     QString iPort=ui->lineEditPort->text();
     QString iRootPath=ui->lineEditRootPath->text();
+
+    QString patternUser("^[a-z0-9_-]{3,16}$");
+    QRegExp rxUser(patternUser);
+
+    QString patternPassword("^[a-z0-9_-]{2,18}$");
+    QRegExp rxPassword(patternPassword);
+
+
+
+
     if(!ui->checkBoxAllowAnyOneLogin->isChecked())
     {
-        if(iUser.isEmpty()||iUser[0]==' ')
+        if(!rxUser.exactMatch(iUser))
         {
-            QMessageBox::information(this,tr("错误"),tr("用户名不能为空！"),QMessageBox::Ok);
+            QMessageBox::information(this,tr("错误"),tr("用户名输入错误！"),QMessageBox::Ok);
             return;
         }
-        else if(iPassword.isEmpty()||iPassword[0]==' ')
+        else if(!rxPassword.exactMatch(iPassword))
         {
-            QMessageBox::information(this,tr("错误"),tr("密码不能为空！"),QMessageBox::Ok);
+            QMessageBox::information(this,tr("错误"),tr("密码输入错误！"),QMessageBox::Ok);
             return;
         }
     }
 
-    if(iPort.isEmpty()||iPort[0]==' ')
+    if(iPort.isEmpty())
     {
-        QMessageBox::information(this,tr("错误"),tr("端口不能为空！"),QMessageBox::Ok);
+        QMessageBox::information(this,tr("错误"),tr("端口输入错误！"),QMessageBox::Ok);
         return;
     }
     if(iRootPath.isEmpty()||iRootPath[0]==' ')
@@ -83,7 +118,14 @@ void MyMainWindow::StartServer()
         return;
     }
     this->LoadSettings();
+
+    if(server!=NULL)
+    {
+        delete server;
+    }
     server = new FtpServer(this,mapServerSetting,mapFileLimit);
+    qDebug()<<"服务启动成功!";
+    connect(server,&FtpServer::AddIpListSig,this,&MyMainWindow::AddIpListSlot);
 
     ui->pushButtonStopServer->setEnabled(true);
     ui->pushButtonStartServer->setText(tr("重启服务"));
@@ -102,9 +144,7 @@ void MyMainWindow::on_toolButtonRootPath_clicked()
 
 void MyMainWindow::on_pushButtonStopServer_clicked()
 {
-    ui->pushButtonStopServer->setEnabled(false);
-    ui->pushButtonStartServer->setText(tr("开启服务"));
-    delete server;
+    this->StopServer();
 }
 
 void MyMainWindow::on_pushButtonDeleteIP_clicked()
@@ -114,6 +154,7 @@ void MyMainWindow::on_pushButtonDeleteIP_clicked()
         QListWidgetItem *item = ui->listWidgetIPAddress->takeItem(ui->listWidgetIPAddress->currentRow());
         delete item;
     }
+    ui->textEdit->clear();
 }
 
 void MyMainWindow::LoadSettings()
@@ -144,4 +185,29 @@ void MyMainWindow::LoadSettings()
     mapFileLimit.insert(QString("AllowOneIP"),ui->checkBoxAllowOneIP->isChecked());
 
 
+}
+
+void MyMainWindow::StopServer()
+{
+    ui->pushButtonStopServer->setEnabled(false);
+    ui->pushButtonStartServer->setText(tr("开启服务"));
+    delete server;
+    server = NULL;
+    ipList.clear();
+    int counter =ui->listWidgetIPAddress->count();
+   for(int index=0;index<counter;index++)
+   {
+       QListWidgetItem *item = ui->listWidgetIPAddress->takeItem(0);
+           delete item;
+   }
+    qDebug()<<"服务停止成功!";
+}
+
+void MyMainWindow::AppendDebugText(const QString &text)
+{
+    if(text==("show keyboard \n") || text==("hide keyboard \n") )
+    {
+        return;
+    }
+    ui->textEdit->append(text);
 }

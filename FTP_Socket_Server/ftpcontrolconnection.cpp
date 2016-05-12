@@ -14,8 +14,8 @@
 
 
 FtpControlConnection::FtpControlConnection(QObject *parent, QTcpSocket *socket,
-                                           QMap<QString, QString> mapServerSetting,
-                                           QMap<QString, bool> mapFileLimit) : QObject(parent)
+                                           const QMap<QString, QString> &mapServerSetting,
+                                           const QMap<QString, bool> &mapFileLimit) : QObject(parent)
 {
 
     this->socket = socket;
@@ -30,6 +30,8 @@ FtpControlConnection::FtpControlConnection(QObject *parent, QTcpSocket *socket,
 
     QMap<QString, bool>::iterator it2 = this->mapFileLimit.find("OnlyRead");
     readOnly = it2.value();
+    it2 = this->mapFileLimit.find("OnlyWrite");
+    writeOnly = it2.value();
 
     isLoggedIn = false;
     encryptDataConnection = true;
@@ -54,6 +56,11 @@ void FtpControlConnection::AcceptNewData()
     }
     this->processCommand(QString::fromUtf8(socket->readLine()).trimmed());
     QTimer::singleShot(0, this, &FtpControlConnection::AcceptNewData);
+}
+
+void FtpControlConnection::disconnectFromHost()
+{
+    socket->disconnectFromHost();
 }
 
 QString FtpControlConnection::stripFlagL(const QString &fileName)
@@ -176,7 +183,12 @@ void FtpControlConnection::processCommand(const QString &entireCommand)
     } else if ("RETR" == command) {
         if (!isLoggedIn) {
             reply("530 You must log in first.");
-        } else {
+        }
+        else if(writeOnly)
+        {
+            reply("550 Can't do that in write-only mode.");
+        }
+        else {
             retr(toLocalPath(commandParameters));
         }
     } else if ("REST" == command) {
@@ -298,7 +310,7 @@ void FtpControlConnection::processCommand(const QString &entireCommand)
 
 void FtpControlConnection::startOrScheduleCommand(FtpCommand *ftpCommand)
 {
-    connect(ftpCommand, SIGNAL(reply(QString)), this, SLOT(reply(QString)));
+    connect(ftpCommand, &FtpCommand::reply, this, &FtpControlConnection::reply);
 
     if (!dataConnection->setFtpCommand(ftpCommand)) {
         delete ftpCommand;
@@ -409,10 +421,6 @@ void FtpControlConnection::quit()
     }
 }
 
-void FtpControlConnection::disconnectFromHost()
-{
-    socket->disconnectFromHost();
-}
 
 
 void FtpControlConnection::size(const QString &fileName)

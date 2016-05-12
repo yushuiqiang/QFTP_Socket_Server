@@ -13,7 +13,6 @@ public:
 
 signals:
     void reply(const QString &details);
-public slots:
 
 protected:
     virtual void startImplementation() = 0;

@@ -193,16 +193,6 @@
      <string>开启服务</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEditDebug">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>200</y>
-      <width>461</width>
-      <height>151</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButtonStopServer">
     <property name="geometry">
      <rect>
@@ -236,7 +226,17 @@
      </rect>
     </property>
     <property name="text">
-     <string>删除IP</string>
+     <string>清空</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>200</y>
+      <width>461</width>
+      <height>151</height>
+     </rect>
     </property>
    </widget>
   </widget>

@@ -1,9 +1,10 @@
 #ifndef FTPCONTROLCONNECTION_H
 #define FTPCONTROLCONNECTION_H
 
+#include <QPointer>
 #include <QObject>
 #include <QTcpSocket>
-#include <QTcpServer>
+
 class FtpCommand;
 class DataConnection;
 
@@ -11,8 +12,8 @@ class FtpControlConnection : public QObject
 {
     Q_OBJECT
 public:
-    explicit FtpControlConnection(QObject *parent,QTcpSocket *socket,QMap<QString,QString> mapServerSetting,
-                                  QMap<QString,bool> mapFileLimit);
+    explicit FtpControlConnection(QObject *parent, QTcpSocket *socket, const QMap<QString, QString> &mapServerSetting,
+                                const QMap<QString, bool> &mapFileLimit);
     ~FtpControlConnection();
 
 signals:
@@ -91,6 +92,7 @@ private:
     QString password;
     QString rootPath;
     bool readOnly;
+    bool writeOnly;
 
 };
 

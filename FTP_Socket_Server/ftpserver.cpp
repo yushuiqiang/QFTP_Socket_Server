@@ -2,8 +2,8 @@
 #include "ftpcontrolconnection.h"
 #include <QTcpSocket>
 
-FtpServer::FtpServer(QObject *parent, QMap<QString, QString> &mapServerSetting,
-                     QMap<QString, bool> &mapFileLimit) : QObject(parent)
+FtpServer::FtpServer(QObject *parent, const QMap<QString, QString> &mapServerSetting,
+                     const QMap<QString, bool> &mapFileLimit) : QObject(parent)
 {
     this->mapFileLimit = mapFileLimit;
     this->mapServerSetting = mapServerSetting;
@@ -14,7 +14,7 @@ FtpServer::FtpServer(QObject *parent, QMap<QString, QString> &mapServerSetting,
         QMap<QString,QString>::iterator it = this->mapServerSetting.find("IPPort");
         bool ok;
          port = QString(it.value()).toInt(&ok,10);
-        qDebug()<<ok<<port;
+        //qDebug()<<ok<<port;
     }
 
     server = new QTcpServer(this);
@@ -23,6 +23,8 @@ FtpServer::FtpServer(QObject *parent, QMap<QString, QString> &mapServerSetting,
 
 
 }
+
+
 
 void FtpServer::StartNewControlConnection()
 {
@@ -47,8 +49,9 @@ void FtpServer::StartNewControlConnection()
             }
         }
 
-        //emit newPeerIp(peerIp);
-        encounteredIps.append(peerIp);
+        emit AddIpListSig(peerIp);
+        encounteredIps.insert(peerIp);
+
     }
 
     new FtpControlConnection(this,socket,this->mapServerSetting,this->mapFileLimit);

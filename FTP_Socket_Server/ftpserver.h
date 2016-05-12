@@ -7,10 +7,13 @@ class FtpServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit FtpServer(QObject *parent,QMap<QString,QString> &mapServerSetting,
-                       QMap<QString,bool> &mapFileLimit);
+    explicit FtpServer(QObject *parent,const QMap<QString,QString> &mapServerSetting,
+                       const QMap<QString,bool> &mapFileLimit);
+
+
 
 signals:
+    void AddIpListSig(const QString IpAddress);
 
 public slots:
 
@@ -23,7 +26,7 @@ private:
 
     QTcpServer *server;
 
-    QVector<QString> encounteredIps;
+    QSet<QString> encounteredIps;
 };
 
 #endif // FTPSERVER_H
