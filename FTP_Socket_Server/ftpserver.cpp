@@ -8,7 +8,7 @@ FtpServer::FtpServer(QObject *parent, const QMap<QString, QString> &mapServerSet
     this->mapFileLimit = mapFileLimit;
     this->mapServerSetting = mapServerSetting;
 
-    int port;
+    int port=21;
     if(this->mapServerSetting.contains("IPPort"))
     {
         QMap<QString,QString>::iterator it = this->mapServerSetting.find("IPPort");

@@ -37,7 +37,7 @@ void FtpRetrCommand::startImplementation()
     //if (socket->isEncrypted()) {
     //    connect(socket, SIGNAL(encryptedBytesWritten(qint64)), this, SLOT(refillSocketBuffer(qint64)));
   //  } else {
-        connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(refillSocketBuffer(qint64)));
+        connect(socket,&QTcpSocket::bytesWritten, this, &FtpRetrCommand::refillSocketBuffer);
   //  }
 
     refillSocketBuffer(128*1024);

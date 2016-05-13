@@ -21,7 +21,6 @@ public:
     void AppendDebugText(const QString &text);
     friend void myMessageOutput(QtMsgType /*type*/, const QMessageLogContext &/*context*/, const QString &msg);
 
-    int i=0;
 signals:
     void sendMsg(const QString &text);
 private slots:

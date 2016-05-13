@@ -36,7 +36,7 @@ void FtpStorCommand::startImplementation()
     if (seekTo) {
         file->seek(seekTo);
     }
-    connect(socket, SIGNAL(readyRead()), this, SLOT(acceptNextBlock()));
+    connect(socket, &QTcpSocket::readyRead, this, &FtpStorCommand::acceptNextBlock);
 }
 
 void FtpStorCommand::acceptNextBlock()
